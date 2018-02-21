@@ -4,10 +4,11 @@ import firebase from 'firebase';
 import Header from './components/header';
 import Card from './components/card';
 import Button from './components/button';
+import LoginForm from './components/loginForm';
 
 class App extends Component {
   componentWillMount() {
-    firebase.initalizeApp({
+    firebase.initializeApp({
     apiKey: 'AIzaSyDn3aQFUCfuI5NvbHX4qCq01G-4XEVm9YU',
     authDomain: 'seniorprojectfirebase.firebaseapp.com',
     databaseURL: 'https://seniorprojectfirebase.firebaseio.com',
@@ -19,10 +20,10 @@ class App extends Component {
 
 	render() {
 		return (
-			<Card>
-<Header headerText="Loginn" />
-<Button />
-</Card>
+			<View>
+<Header headerText="Login" />
+<LoginForm />
+</View>
 
 			);
 	}
