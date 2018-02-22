@@ -21,7 +21,7 @@ const styles = {
       paddingBottom: 10
 	},
 	buttonStyle: {
-      flex: 0,
+      flex: 1,
       alignSelf: 'stretch',
       backgroundColor: '#fff',
       borderRadius: 5,
@@ -35,4 +35,4 @@ const styles = {
 };
 
 
-export default Button;
+export { Button };

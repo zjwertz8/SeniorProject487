@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
+import { Header } from './components/common';
 import firebase from 'firebase';
-import Header from './components/header';
-import Card from './components/card';
-import Button from './components/button';
 import LoginForm from './components/loginForm';
 
 class App extends Component {

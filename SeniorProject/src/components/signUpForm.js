@@ -1,12 +1,30 @@
 import React, { Component } from 'react';
 import { Button, Card, CardSection, Input } from './common';
 
-class LoginForm extends Component {
-    state = { emailText: '', passText: '' };
+class SignUpForm extends Component {
+    state = { firstName: '', lastName: '', emailText: '', passText: '' };
 
 	render() {
 		return (
 			<Card>
+
+			<CardSection>
+			<Input
+			value={this.state.firstName}
+			onChangeText={firstName => this.setState({ firstName })}
+			label={'First Name: '}
+			placeholder={'John'}
+			/>
+			</CardSection>
+
+			<CardSection>
+			<Input
+			value={this.state.lastName}
+			onChangeText={lastName => this.setState({ lastName })}
+			label={'Last Name: '}
+			placeholder={'Smith'}
+			/>
+			</CardSection>
 
 			<CardSection>
 			<Input
@@ -36,4 +54,4 @@ class LoginForm extends Component {
 	}
 }
 
-export default LoginForm;
+export default SignUpForm;
