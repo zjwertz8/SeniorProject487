@@ -1,10 +1,22 @@
 import React, { Component } from 'react';
 import { View } from 'react-native';
-import { Header } from './components/common';
+import { StackNavigator } from 'react-navigation';
 import firebase from 'firebase';
+import SignUpForm from './components/signUpForm';
 import LoginForm from './components/loginForm';
+import Home from './components/home';
 
-class App extends Component {
+const RootStack = StackNavigator(
+{
+  Login: { screen: LoginForm },
+  Signup: { screen: SignUpForm },
+  Home: { screen: Home }
+},
+  { initialRouteName: 'Login' },
+);
+
+export default class App extends React.Component {
+
   componentWillMount() {
     firebase.initializeApp({
     apiKey: 'AIzaSyDn3aQFUCfuI5NvbHX4qCq01G-4XEVm9YU',
@@ -15,16 +27,8 @@ class App extends Component {
     messagingSenderId: '513438490490'
   });
   }
-
+  
 	render() {
-		return (
-			<View>
-<Header headerText="Login" />
-<LoginForm />
-</View>
-
-			);
+    return <RootStack />;
 	}
 }
-
-export default App;
