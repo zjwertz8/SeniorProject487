@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { View, Text } from 'react-native';
 import firebase from 'firebase';
 import { Button, Card, CardSection, Input, Header } from './common';
@@ -9,13 +9,30 @@ class LoginForm extends React.Component {
 	}
     state = { emailText: '', passText: '', error: '' };
     
+// componentWillMount() {
+//     firebase.auth().onAuthStateChanged(function(user) {
+//         if (user) {
+//            console.log('yes a user');
+//          }
+//          else {
+//            console.log('nope no user');
+//         }
+//    });
+//    }
+
     onButtonPress() {
         const { emailText, passText } = this.state;
         this.setState({ error: '' }); 
 
         firebase.auth().signInWithEmailAndPassword(emailText, passText)
+        .then(() => {
+          console.log('logged in');
+          this.setState({ error: 'nice ron' });
+          this.props.navigation.navigate('Home');
+        })
         .catch(() => {
         this.setState({ error: 'Login Failed.' });
+        console.log(this.state.error);
         });
     }
 
@@ -53,7 +70,6 @@ class LoginForm extends React.Component {
                buttonText="Login"
                onPress={() => { 
                                 this.onButtonPress();
-                                console.log(this.state); 
                               }}
                // onPress={() => { console.log(this.state); }} 
 			/>

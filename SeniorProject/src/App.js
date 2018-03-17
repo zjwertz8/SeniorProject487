@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, BackAndroid, BackHandler } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import firebase from 'firebase';
 import SignUpForm from './components/signUpForm';
@@ -27,7 +27,18 @@ export default class App extends React.Component {
     messagingSenderId: '513438490490'
   });
   }
+
+  componentDidMount() {
+     BackHandler.addEventListener('hardwareBackPress', this.handleBackButton);
+  }
   
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackButton);
+  }
+
+  handleBackButton() {
+    return true;
+  }
 	render() {
     return <RootStack />;
 	}

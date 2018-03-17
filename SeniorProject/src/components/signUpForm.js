@@ -8,27 +8,27 @@ class SignUpForm extends React.Component {
 		header: null
 	}
     state = { emailText: '', passText: '', error: '' };
-	
+
 	onButtonPress() {
 		const { emailText, passText } = this.state;
 		this.setState({ error: '' });
         console.log(this.state.emailText);
 		firebase.auth().createUserWithEmailAndPassword(emailText, passText)
-		.catch(() => {
+		.catch((error) => {
+			console.log(error);
         if (passText.length < 6) {
           this.setState({ error: 'Password Must Be At Least 6 Characters' });
         }
         else {
-          this.setState({ error: 'Authentication Failed' });
+          this.setState({ error: 'Sign up Failed' });
         }
-	})
-		.then(this.props.navigation.navigate('Login'));
+	});
 	}
 
 	render() {
 		return (
 			<View>
-			<SignUpHeader headerText="Sign Up" />
+			<SignUpHeader headerText="Sign Up" navigation={this.props.navigation} />
 			<Card>
 
 			<CardSection>
@@ -88,3 +88,5 @@ export default SignUpForm;
 			// placeholder={'Smith'}
 			// />
 			// </CardSection>
+
+			// .then(this.props.navigation.navigate('Login'));

@@ -1,25 +1,27 @@
 import React, { Component } from 'react';
 import { View, Text } from 'react-native';
-import { Button, Card, CardSection, Input, SignUpHeader } from './common';
+import firebase from 'firebase';
+import { Button, Card, CardSection, Input, Header } from './common';
 
 class Home extends React.Component {
 	static navigationOptions = {
 		header: null
 	}
 
+	componentWillMount() {
+		const current = firebase.auth().currentUser;
+		console.log(current.email);
+		console.log(current);
+	}
+	
 	render() {
 		return (
 			<View>
-			<SignUpHeader headerText="Home" />
+			<Header headerText="Home" />
 			<Card>
 
 			<CardSection>
-			<Input
-			value={this.state.emailText}
-			onChangeText={emailText => this.setState({ emailText })}
-			label={'Email: '}
-			placeholder={'Address@gmail.com'}
-			/>
+			<Text>Yarg</Text>
 			</CardSection>
 
 			</Card>
