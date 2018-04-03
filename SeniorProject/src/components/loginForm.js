@@ -7,32 +7,30 @@ class LoginForm extends React.Component {
 	static navigationOptions = {
 		header: null
 	}
-    state = { emailText: '', passText: '', error: '' };
-    
-// componentWillMount() {
-//     firebase.auth().onAuthStateChanged(function(user) {
-//         if (user) {
-//            console.log('yes a user');
-//          }
-//          else {
-//            console.log('nope no user');
-//         }
-//    });
-//    }
+    state = { emailText: '', passText: '', error: '', firstName: '' };
+
 
     onButtonPress() {
         const { emailText, passText } = this.state;
-        this.setState({ error: '' }); 
 
         firebase.auth().signInWithEmailAndPassword(emailText, passText)
         .then(() => {
-          console.log('logged in');
-          this.setState({ error: 'nice ron' });
-          this.props.navigation.navigate('Home');
+           this.setState({ error: 'Authorization Granted' });
+
+        	const current = firebase.auth().currentUser;
+        	this.props.navigation.navigate('Home', { current });
+
+        	firebase.database()
+	        .ref('users')
+	        .child(current.uid)
+	        .once('value')
+	        .then(function(snapshot) {
+				const currentUser = snapshot.val();
+				console.log(currentUser);
+			});
         })
         .catch(() => {
         this.setState({ error: 'Login Failed.' });
-        console.log(this.state.error);
         });
     }
 
@@ -47,7 +45,7 @@ class LoginForm extends React.Component {
 			value={this.state.emailText}
 			onChangeText={emailText => this.setState({ emailText })}
 			label={'Email: '}
-			placeholder={'Zjwertz@gmail.com'}
+			placeholder={'Email@gmail.com'}
 			/>
 			</CardSection>
           
@@ -60,8 +58,8 @@ class LoginForm extends React.Component {
 			secureTextEntry
 			/>
 			</CardSection>
-            
-            <Text style={styles.errorTextStyle}>
+
+			<Text style={styles.errorTextStyle}>
             { this.state.error }
             </Text>
  
@@ -99,3 +97,17 @@ const styles = {
 
 
 export default LoginForm;
+
+ // const nav = this.props.navigation;
+ //            console.log(nav);
+ //        	const current = firebase.auth().currentUser;
+ //        	firebase.database()
+	//         .ref('users')
+	//         .child(current.uid)
+	//         .once('value')
+	//         .then(function(snapshot, nav) {
+	// 			const currentUser = snapshot.val();
+	// 			const famName = currentUser.familyName;
+	// 			console.log(famName);
+	// 			console.log(nav);
+	// 		});

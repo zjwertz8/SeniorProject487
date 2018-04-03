@@ -1,15 +1,16 @@
 // Import libraries for making a component
 import React from 'react';
 import { Text, View, TouchableOpacity, Button } from 'react-native';
-//import { Button } from './index';
 
 // Make a component
 const SignUpHeader = (props) => {
-	const { textStyle, viewStyle, buttonStyle } = styles;
+	const { viewStyle, buttonStyle, backTextStyle } = styles;
 	return (
 		<View style={viewStyle}>
-           <TouchableOpacity style={buttonStyle} onPress={() => props.navigation.goBack()} />
-           <Text>{props.headerText}</Text>
+           <TouchableOpacity style={buttonStyle} onPress={() => props.navigation.goBack()} >
+           <Text style={backTextStyle}>{props.buttonText}</Text>
+           </TouchableOpacity>
+           <Text style={{ fontSize: props.fontSize, marginLeft: props.marginLeft }}>{props.headerText}</Text>
     </View>
 		);
 };
@@ -23,11 +24,7 @@ const styles = {
    elevation: 8,
    flexDirection: 'row',
   },
-  textStyle: {
-   fontSize: 40
-  },
   buttonTextStyle: {
-      alignSelf: 'center',
       color: '#37474F',
       fontSize: 16,
       fontWeight: '600',
@@ -43,8 +40,19 @@ const styles = {
       borderColor: 'white',
       marginLeft: 5,
       marginRight: 5,
-      marginTop: 7,
-      marginBottom: 3
+      marginTop: 10,
+      marginBottom: 0,
+      position: 'absolute',
+      top: 0,
+      left: 0,
+  },
+  backTextStyle: {
+      alignSelf: 'center',
+      color: '#37474F',
+      fontSize: 16,
+      fontWeight: '600',
+      paddingTop: 8,
+      paddingBottom: 10
   }
 };
 

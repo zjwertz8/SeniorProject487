@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
-import { View, BackAndroid, BackHandler } from 'react-native';
+import { BackHandler } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import firebase from 'firebase';
 import SignUpForm from './components/signUpForm';
 import LoginForm from './components/loginForm';
 import Home from './components/home';
+import FamilyMembers from './components/familyMembers';
+import AddFamilyMemberForm from './components/addFamilyMember';
 
 const RootStack = StackNavigator(
 {
   Login: { screen: LoginForm },
   Signup: { screen: SignUpForm },
-  Home: { screen: Home }
+  Home: { screen: Home },
+  FamilyMembers: { screen: FamilyMembers },
+  AddFamilyMember: { screen: AddFamilyMemberForm }, 
 },
   { initialRouteName: 'Login' },
 );
