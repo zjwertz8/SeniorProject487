@@ -26,7 +26,6 @@ class LoginForm extends React.Component {
 	        .once('value')
 	        .then(function(snapshot) {
 				const currentUser = snapshot.val();
-				console.log(currentUser);
 			});
         })
         .catch(() => {

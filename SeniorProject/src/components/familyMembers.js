@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ListView } from 'react-native';
+import { View, Text, ListView, ScrollView } from 'react-native';
 import firebase from 'firebase';
 import { Button, Card, CardSection, Input, SignUpHeader, ListItem } from './common';
 
@@ -10,32 +10,46 @@ class FamilyMembers extends React.Component {
 
 	constructor(props) {
 		super(props);
-		const dataSource = new ListView.DataSource({
-			rowHasChanged: (row1, row2) => row1 !== row2,
-		});
-		uid = firebase.auth().currentUser.uid;
-		firebase.database().ref('users')
-               .child(uid)
-               .child('familyMembers')
-               .once('value')
-               .then(function(snapshot) {
-                const currentFamilyMember = snapshot.val();
-                const firstName = Object.keys(currentFamilyMember)[0];
-                const baileyAge = currentFamilyMember.Bailey.Age;
-                console.log(firstName);
-                console.log(baileyAge);
-               });
-		currentEmail = firebase.auth().currentUser.email;
-		this.state = {
-			dataSource: dataSource.cloneWithRows([
-				{ name: currentEmail }, { name: 'eat' }, { name: 'code'}])
-		};
+ 
+        uid = firebase.auth().currentUser.uid;
+		this.dataRef = firebase.database().ref('/users/' + uid + '/familyMembers');
 
+
+		this.state = {
+			dataSource: new ListView.DataSource({
+				rowHasChanged: (row1, row2) => row1 !== row2,
+				})
+			};
+		
+	}
+
+	listenForProfiles(dataRef) {
+		dataRef.on('value', (snap) => {
+			var profiles = [];
+			console.log(snap);
+			snap.forEach((child) => {
+				profiles.push({
+					name: child.val().forename,
+					_key: child.key
+				});
+
+		        var temp = child.val();
+				
+			});
+			console.log(profiles);
+			this.setState({
+				dataSource: this.state.dataSource.cloneWithRows(profiles)
+			});
+		});
+	}
+
+	componentDidMount() {
+		this.listenForProfiles(this.dataRef);
 	}
 
 	_renderItem(item) {
 		return (
-			<ListItem item={item} />
+			<ListItem item={item._key} />
 			);
 	}
 
@@ -45,13 +59,15 @@ class FamilyMembers extends React.Component {
 			<View>
 			<SignUpHeader marginLeft={10} fontSize={30} buttonText="Back" headerText="Family Members" navigation={this.props.navigation} />
 			<Card>
-
+ 
+            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 			<CardSection>
 			<ListView 
 			 enableEmptySections={true}
 			 dataSource={this.state.dataSource}
 			 renderRow={this._renderItem.bind(this) }/>
 			</CardSection>
+			</ScrollView>
 
 			<CardSection>
 			<Button 
@@ -77,23 +93,17 @@ export default FamilyMembers;
 				
 	// 			console.log(currentUser.familyName);
 	// 		});
+     
 
-	// componentWillMount() {
-	// 	const { familyName } = this.state;
-	// 	const current = firebase.auth().currentUser;
-	// 	console.log(current.email);
-	// 	console.log(current);
-
-	// 	if (firebase.auth().currentUser) {
-	// 		const uid = firebase.auth().currentUser.uid;
-	// 		if (uid) {
- //               firebase.database().ref('users')
+	// 	firebase.database().ref('users')
  //               .child(uid)
+ //               .child('familyMembers')
  //               .once('value')
  //               .then(function(snapshot) {
- //                const currentFamily = snapshot.val();
- //                console.log(currentFamily.familyName);
- //               });             
-	// 		}
-	// 	}
+ //                const currentFamilyMember = snapshot.val();
+ //                const firstName = Object.keys(currentFamilyMember)[0];
+ //                const baileyAge = currentFamilyMember.Bailey.Age;
+ //                console.log(firstName);
+ //                console.log(baileyAge);
+ //               });
 	// }

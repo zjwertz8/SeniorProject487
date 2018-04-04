@@ -10,11 +10,19 @@ class Home extends React.Component {
     
    constructor(props) {
    	super(props);
-   	console.log(props);
-   	console.log('split');
+   	this.state = {
+   		user: firebase.auth().currentUser,
+   		famName: ''
+   	};
    }
 
-	state = { familyName: '' };
+	componentDidMount(){
+		var ref = firebase.database().ref('users/' + this.state.user.uid);
+		ref.child('familyName').once('value', function(snap) {} )
+		.then(result => {
+			this.setState({famName: result.val()});
+		})
+	}
 	
 	render() {
 		return (
@@ -23,7 +31,7 @@ class Home extends React.Component {
 			<Card>
 
 			<CardSection>
-			<Text>yeah</Text>
+			<Text>{ this.state.famName }</Text>
 			</CardSection>
 
 			<CardSection>
