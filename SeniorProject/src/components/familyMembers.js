@@ -56,18 +56,17 @@ class FamilyMembers extends React.Component {
 	
 	render() {
 		return (
+		    <ScrollView>
 			<View>
 			<SignUpHeader marginLeft={10} fontSize={30} buttonText="Back" headerText="Family Members" navigation={this.props.navigation} />
 			<Card>
  
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
 			<CardSection>
 			<ListView 
 			 enableEmptySections={true}
 			 dataSource={this.state.dataSource}
 			 renderRow={this._renderItem.bind(this) }/>
 			</CardSection>
-			</ScrollView>
 
 			<CardSection>
 			<Button 
@@ -78,6 +77,7 @@ class FamilyMembers extends React.Component {
 
 			</Card>
 			</View>
+			</ScrollView>
 			);
 	}
 }
