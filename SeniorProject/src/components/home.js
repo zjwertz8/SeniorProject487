@@ -31,7 +31,7 @@ class Home extends React.Component {
 			<Card>
 
 			<CardSection>
-			<Text style={{fontSize: 30}}>{ this.state.famName }</Text>
+			<Text style={{fontSize: 24}}>Welcome { this.state.famName } Family</Text>
 			</CardSection>
 
 			<CardSection>

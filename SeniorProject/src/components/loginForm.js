@@ -12,7 +12,6 @@ class LoginForm extends React.Component {
 
     onButtonPress() {
         const { emailText, passText } = this.state;
-
         firebase.auth().signInWithEmailAndPassword(emailText, passText)
         .then(() => {
            this.setState({ error: 'Authorization Granted' });
@@ -20,13 +19,6 @@ class LoginForm extends React.Component {
         	const current = firebase.auth().currentUser;
         	this.props.navigation.navigate('Home', { current });
 
-        	firebase.database()
-	        .ref('users')
-	        .child(current.uid)
-	        .once('value')
-	        .then(function(snapshot) {
-				const currentUser = snapshot.val();
-			});
         })
         .catch(() => {
         this.setState({ error: 'Login Failed.' });
@@ -45,6 +37,7 @@ class LoginForm extends React.Component {
 			onChangeText={emailText => this.setState({ emailText })}
 			label={'Email: '}
 			placeholder={'Email@gmail.com'}
+			keyboardType={'default'}
 			/>
 			</CardSection>
           
@@ -54,6 +47,7 @@ class LoginForm extends React.Component {
 			onChangeText={passText => this.setState({ passText })}
 			label={'Password: '}
 			placeholder={'Password'}
+			keyboardType={'default'}
 			secureTextEntry
 			/>
 			</CardSection>
@@ -96,17 +90,3 @@ const styles = {
 
 
 export default LoginForm;
-
- // const nav = this.props.navigation;
- //            console.log(nav);
- //        	const current = firebase.auth().currentUser;
- //        	firebase.database()
-	//         .ref('users')
-	//         .child(current.uid)
-	//         .once('value')
-	//         .then(function(snapshot, nav) {
-	// 			const currentUser = snapshot.val();
-	// 			const famName = currentUser.familyName;
-	// 			console.log(famName);
-	// 			console.log(nav);
-	// 		});

@@ -13,33 +13,34 @@ class SignUpForm extends React.Component {
 		const { emailText, passText, familyName } = this.state;
 		this.setState({ error: '' });
 
-		console.log(familyName.length);
-		console.log('split');
-		console.log(passText.length);
+		   if(emailText.length === 0) {
+		   	this.setState({ error: 'Please Provide Email Address'});
+		   	return;
+		   }
+		   else if (passText.length < 6) {
+		   	this.setState({ error: 'Password Must Be 6 Characters'});
+		   	return;
+		   }
+			else if(familyName.length === 0) {
+              this.setState({ error: 'Please Provide Family Name'});
+              return;
+          }
 
 		firebase.auth().createUserWithEmailAndPassword(emailText, passText)
 		.then((user) => {
-			firebase.database().ref('users/' + user.uid).set({
+              
+            firebase.database().ref('users/' + user.uid).set({
 				familyName: familyName,
 			});
 			this.props.navigation.navigate('Home');
 		})
 		.catch((error) => {
-        if (passText.length < 6) {
-          this.setState({ error: 'Password Must Be At Least 6 Characters' });
-          console.log(error);
-        }
-		else if (familyName.length < 1) {
-			this.setState({ error: 'Family Name is Required.' });
-			console.log(error);
-		}
-        else if (error.code === 'auth/email-already-in-use') {
-            this.setState({ error: 'Email Already in Use.' });
-            console.log(familyName.length);
-            console.log(error);
+        if (error.code === 'auth/email-already-in-use') {
+            this.setState({ error: 'Email Already in Use' });
         }
         else {
             this.setState({ error: 'Sign Up Failed' });
+            console.log(error);
             
         }
 	});
@@ -57,6 +58,7 @@ class SignUpForm extends React.Component {
 			onChangeText={emailText => this.setState({ emailText: emailText })}
 			label={'Email: '}
 			placeholder={'Address@gmail.com'}
+			keyboardType={'default'}
 			/>
 			</CardSection>
           
@@ -67,6 +69,7 @@ class SignUpForm extends React.Component {
 			label={'Password: '}
 			placeholder={'Six Characters Minimum'}
 			secureTextEntry
+			keyboardType={'default'}
 			/>
 			</CardSection>
 
@@ -76,6 +79,7 @@ class SignUpForm extends React.Component {
 			onChangeText={familyName => this.setState({ familyName })}
 			label={'Family Name: '}
 			placeholder={'Johnson'}
+			keyboardType={'default'}
 			/>
 			</CardSection>
 
@@ -103,7 +107,20 @@ const styles = {
 		fontSize: 20,
 		alignSelf: 'center',
 		color: 'red'
-	}
+	},
+	inputContainerStyle: {
+    height: 40,
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  inputContainerErrorStyle: {
+    height: 40,
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'pink'
+  }
 };
 
 export default SignUpForm;

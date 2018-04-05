@@ -7,15 +7,25 @@ class AddFamilyMemberForm extends React.Component {
 	static navigationOptions = {
 		header: null
 	}
-    state = { Name: '', Age: '', error: '', Dropdown: 0, Stores: '', DropdownError: '' };
+    state = { Name: '', Age: '', error: '', Dropdown: 0, Stores: '' };
 
 	onButtonPress() {
 		const { Name, Age, error, Dropdown } = this.state;
 		this.setState({ error: '' });
 		const current = firebase.auth().currentUser;
-        if(Dropdown === 0)
+
+        if(Name.length === 0)
         {
-        	this.setState({ DropdownError: 'Select a Family Role'});
+        	this.setState({ error: 'Please Provide Name' });
+        	return;
+        }
+        else if (Age.length === 0)
+        {
+        	this.setState({ error: 'Please Provide Age' });
+        }
+        else if (Dropdown === 0)
+        {
+        	this.setState({ error: 'Please Select a Family Role'});
         	return;
         }
         else 
@@ -24,6 +34,7 @@ class AddFamilyMemberForm extends React.Component {
 			Age: Age,
 			Dropdown: Dropdown,
 		});
+		this.props.navigation.navigate('Home');
 	}
 	}
 
@@ -40,6 +51,7 @@ class AddFamilyMemberForm extends React.Component {
 			onChangeText={Name => this.setState({ Name })}
 			label={'Name: '}
 			placeholder={'Jane'}
+			keyboardType={'default'}
 			/>
 			</CardSection>
           
@@ -49,18 +61,23 @@ class AddFamilyMemberForm extends React.Component {
 			onChangeText={Age => this.setState({ Age })}
 			label={'Age: '}
 			placeholder={'15'}
+			keyboardType={'numeric'}
 			/>
 			</CardSection>
 			
-            <Picker style={[styles.picker, this.state.DropdownError == 'Select a Family Role' && styles.pickerError]} selectedValue={this.state.Dropdown} onValueChange={(itemValue) => this.setState({ Dropdown: itemValue})}>
-            <Picker.Item label="Please Select a Value" value="0" />
+            <Picker style={[styles.picker, this.state.error == 'Please Select a Family Role' && styles.pickerError]} selectedValue={this.state.Dropdown} onValueChange={(itemValue) => this.setState({ Dropdown: itemValue})}>
+            <Picker.Item label="Please Select a Value" value={0} />
+            <Picker.Item label="Dad" value="Dad" />
             <Picker.Item label="Daughter" value="Daughter" />
+            <Picker.Item label="Grandfather" value="Grandfather" />
+            <Picker.Item label="Grandmother" value="Grandmother" />
+            <Picker.Item label="Husband" value="Husband" />
+            <Picker.Item label="Mom" value="Mom" />
+            <Picker.Item label="Son" value="Son" />
             <Picker.Item label="Wife" value="Wife" />
             </Picker>
 
-            <CardSection>
-            <Text style={styles.errorTextStyle}> { this.state.DropdownError }</Text>
-            </CardSection>
+            <Text style={styles.errorTextStyle}> { this.state.error }</Text>
 
 			<CardSection>
 			<Button 

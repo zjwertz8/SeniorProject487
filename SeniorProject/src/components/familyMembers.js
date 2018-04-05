@@ -18,7 +18,8 @@ class FamilyMembers extends React.Component {
 		this.state = {
 			dataSource: new ListView.DataSource({
 				rowHasChanged: (row1, row2) => row1 !== row2,
-				})
+				}),
+			emptyRows: '',
 			};
 		
 	}
@@ -26,7 +27,6 @@ class FamilyMembers extends React.Component {
 	listenForProfiles(dataRef) {
 		dataRef.on('value', (snap) => {
 			var profiles = [];
-			console.log(snap);
 			snap.forEach((child) => {
 				profiles.push({
 					name: child.val().forename,
@@ -36,10 +36,18 @@ class FamilyMembers extends React.Component {
 		        var temp = child.val();
 				
 			});
-			console.log(profiles);
+			console.log(profiles.length);
+			if(profiles.length === 0)
+			{
+				this.setState({
+				dataSource: this.state.dataSource.cloneWithRows(profiles), emptyRows: 'No Current Family Members'
+			});
+			}
+			else {
 			this.setState({
 				dataSource: this.state.dataSource.cloneWithRows(profiles)
 			});
+		}
 		});
 	}
 
@@ -68,6 +76,12 @@ class FamilyMembers extends React.Component {
 			 renderRow={this._renderItem.bind(this) }/>
 			</CardSection>
 
+			<CardSection 
+			style={{ backgroundColor: 'pink'}} 
+			>
+			<Text>{this.state.emptyRows}</Text>
+			</CardSection>
+
 			<CardSection>
 			<Button 
 	        buttonText="Add Family Member" 
@@ -83,27 +97,3 @@ class FamilyMembers extends React.Component {
 }
 
 export default FamilyMembers;
-
-	// 	firebase.database()
-	// .ref('users')
-	// .child(user.uid)
-	// .once('value')
-	// .then(function(snapshot) {
-	// 			const currentUser = snapshot.val();
-				
-	// 			console.log(currentUser.familyName);
-	// 		});
-     
-
-	// 	firebase.database().ref('users')
- //               .child(uid)
- //               .child('familyMembers')
- //               .once('value')
- //               .then(function(snapshot) {
- //                const currentFamilyMember = snapshot.val();
- //                const firstName = Object.keys(currentFamilyMember)[0];
- //                const baileyAge = currentFamilyMember.Bailey.Age;
- //                console.log(firstName);
- //                console.log(baileyAge);
- //               });
-	// }

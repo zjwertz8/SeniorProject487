@@ -15,10 +15,10 @@ class ListItem extends Component {
 const styles = {
   listItem: {
     borderBottomColor: '#eee',
-    borderColor: 'gray',
+    borderColor: 'pink',
     flexDirection:'row',
     alignItems:'center',
-    borderWidth: 1,
+    borderWidth: 2,
     padding: 5
   },
 }
