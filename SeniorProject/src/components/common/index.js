@@ -5,3 +5,4 @@ export * from './header';
 export * from './textInput';
 export * from './signupHeader';
 export * from './listItem';
+export * from './homeHeader';

@@ -1,18 +1,19 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import firebase from 'firebase';
-import { Button, Card, CardSection, HomeHeader } from './common';
+import { Button, Card, CardSection, SignUpHeader } from './common';
 
-class Home extends React.Component {
+class FamilyMemberPersonalPage extends React.Component {
 	static navigationOptions = {
 		header: null
 	}
     
    constructor(props) {
    	super(props);
+   	console.log(props.navigation.state.params.famMem);
    	this.state = {
    		user: firebase.auth().currentUser,
-   		famName: '',
+   		famMem: props.navigation.state.params.famMem,
    	};
    }
 
@@ -27,11 +28,11 @@ class Home extends React.Component {
 	render() {
 		return (
 			<View>
-			<HomeHeader marginLeft={0} fontSize={40} headerText="Home" buttonText="Logout" />
+			<SignUpHeader marginLeft={10} fontSize={30} buttonText="Back" headerText= {this.state.famMem + "'s Personal Page"} navigation={this.props.navigation} />
 			<Card>
 
 			<CardSection>
-			<Text style={{fontSize: 24}}>Welcome { this.state.famName } Family</Text>
+			<Text style={{fontSize: 24}}>Welcome { this.state.famMem } Family</Text>
 			</CardSection>
 
 			<CardSection>
@@ -42,17 +43,10 @@ class Home extends React.Component {
 			<Text>Table for Appointments</Text>
 			</CardSection>
 
-			<CardSection>
-			<Button 
-			buttonText="Family Members"
-			onPress={() => this.props.navigation.navigate('FamilyMembers')} 
-			/>
-			</CardSection>
-
 			</Card>
 			</View>
 			);
 	}
 }
 
-export default Home;
+export default FamilyMemberPersonalPage;

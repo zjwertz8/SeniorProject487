@@ -6,7 +6,7 @@ class ListItem extends Component {
   render() {
     return (
       <View style={styles.listItem}>
-        <Button buttonText={this.props.item}></Button>
+        <Button buttonText={this.props.item} onPress={this.props.onPress}></Button>
       </View>
     );
   }

@@ -7,6 +7,7 @@ import LoginForm from './components/loginForm';
 import Home from './components/home';
 import FamilyMembers from './components/familyMembers';
 import AddFamilyMemberForm from './components/addFamilyMember';
+import FamilyMemberPersonalPage from './components/familyMemberPersonalPage';
 
 const RootStack = StackNavigator(
 {
@@ -14,7 +15,8 @@ const RootStack = StackNavigator(
   Signup: { screen: SignUpForm },
   Home: { screen: Home },
   FamilyMembers: { screen: FamilyMembers },
-  AddFamilyMember: { screen: AddFamilyMemberForm }, 
+  AddFamilyMember: { screen: AddFamilyMemberForm },
+  FamilyMemberPersonalPage: { screen: FamilyMemberPersonalPage },
 },
   { initialRouteName: 'Login' },
 );

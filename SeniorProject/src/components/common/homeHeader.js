@@ -3,11 +3,11 @@ import React from 'react';
 import { Text, View, TouchableOpacity, Button } from 'react-native';
 
 // Make a component
-const SignUpHeader = (props) => {
+const HomeHeader = (props) => {
 	const { viewStyle, buttonStyle, backTextStyle } = styles;
 	return (
 		<View style={viewStyle}>
-           <TouchableOpacity style={buttonStyle} onPress={() => props.navigation.goBack()} >
+           <TouchableOpacity style={buttonStyle}>
            <Text style={backTextStyle}>{props.buttonText}</Text>
            </TouchableOpacity>
            <Text style={{ fontSize: props.fontSize, marginLeft: props.marginLeft }}>{props.headerText}</Text>
@@ -33,7 +33,7 @@ const styles = {
   },
   buttonStyle: {
     height: 40,
-    width: 50,
+    width: 60,
       backgroundColor: '#fff',
       borderRadius: 5,
       borderWidth: 2,
@@ -58,4 +58,4 @@ const styles = {
 
 
 // Make the component available to other parts of the app
-export { SignUpHeader };
+export { HomeHeader };

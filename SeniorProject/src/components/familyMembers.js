@@ -23,6 +23,17 @@ class FamilyMembers extends React.Component {
 			};
 		
 	}
+    
+    profilesSize(profiles) {
+    	if(profiles.length === 1)
+    	{
+           return profiles.length + ' Current Family Member';
+        }
+        else
+        {
+        	return profiles.length + ' Current Family Members';
+        }
+	}
 
 	listenForProfiles(dataRef) {
 		dataRef.on('value', (snap) => {
@@ -36,7 +47,7 @@ class FamilyMembers extends React.Component {
 		        var temp = child.val();
 				
 			});
-			console.log(profiles.length);
+			
 			if(profiles.length === 0)
 			{
 				this.setState({
@@ -45,7 +56,7 @@ class FamilyMembers extends React.Component {
 			}
 			else {
 			this.setState({
-				dataSource: this.state.dataSource.cloneWithRows(profiles)
+				dataSource: this.state.dataSource.cloneWithRows(profiles), emptyRows: this.profilesSize(profiles)
 			});
 		}
 		});
@@ -55,9 +66,15 @@ class FamilyMembers extends React.Component {
 		this.listenForProfiles(this.dataRef);
 	}
 
+	onPress = (item) => {
+		let famMem = item._key;
+		this.props.navigation.navigate('FamilyMemberPersonalPage', { famMem });
+	}
+
 	_renderItem(item) {
 		return (
-			<ListItem item={item._key} />
+			<ListItem 
+			 onPress={() => this.onPress(item)} item={item._key} />
 			);
 	}
 
@@ -73,13 +90,13 @@ class FamilyMembers extends React.Component {
 			<ListView 
 			 enableEmptySections={true}
 			 dataSource={this.state.dataSource}
-			 renderRow={this._renderItem.bind(this) }/>
+			 renderRow={this._renderItem.bind(this) } />
 			</CardSection>
 
 			<CardSection 
 			style={{ backgroundColor: 'pink'}} 
 			>
-			<Text>{this.state.emptyRows}</Text>
+			<Text style={[styles.textStyle, this.state.emptyRows == 'No Current Family Members' && styles.errorTextStyle]}>{this.state.emptyRows}</Text>
 			</CardSection>
 
 			<CardSection>
@@ -93,6 +110,18 @@ class FamilyMembers extends React.Component {
 			</View>
 			</ScrollView>
 			);
+	}
+}
+
+const styles ={
+	errorTextStyle: {
+		fontSize: 20,
+		alignSelf: 'center',
+		color: 'red'
+	},
+	textStyle: {
+		fontSize: 20,
+		alignSelf: 'center',
 	}
 }
 
