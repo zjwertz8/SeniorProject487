@@ -7,12 +7,14 @@ class AddFamilyMemberForm extends React.Component {
 	static navigationOptions = {
 		header: null
 	}
-    state = { Name: '', Age: '', error: '', Dropdown: 0, Stores: '' };
+    state = { Name: '', Age: '', error: '', Dropdown: 0};
 
 	onButtonPress() {
 		const { Name, Age, error, Dropdown } = this.state;
 		this.setState({ error: '' });
 		const current = firebase.auth().currentUser;
+		console.log(Age);
+		console.log(isNaN(Age));
 
         if(Name.length === 0)
         {
@@ -22,6 +24,17 @@ class AddFamilyMemberForm extends React.Component {
         else if (Age.length === 0)
         {
         	this.setState({ error: 'Please Provide Age' });
+        	return;
+        }
+        else if (Age <= 0)
+        {
+        	this.setState({ error: 'Please Provide Valid Age' });
+        	return;
+        }
+        else if(isNaN(Age) || Age.includes('.'))
+        {
+        	this.setState({ error: 'Please Enter Integer Value'});
+        	return;
         }
         else if (Dropdown === 0)
         {
@@ -37,6 +50,7 @@ class AddFamilyMemberForm extends React.Component {
 		this.props.navigation.navigate('Home');
 	}
 	}
+
 
 	render() {
 		const current = firebase.auth().currentUser;
@@ -121,11 +135,3 @@ const styles = {
 };
 
 export default AddFamilyMemberForm;
-// firebase.database()
-// 	.ref('users')
-// 	.child(current.uid)
-// 	.once('value')
-// 	.then(function(snapshot) {
-// 				const currentUser = snapshot.val();
-// 				console.log(currentUser);
-// 			});

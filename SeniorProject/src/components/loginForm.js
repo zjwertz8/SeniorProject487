@@ -62,7 +62,6 @@ class LoginForm extends React.Component {
                onPress={() => { 
                                 this.onButtonPress();
                               }}
-               // onPress={() => { console.log(this.state); }} 
 			/>
 			</CardSection>
 

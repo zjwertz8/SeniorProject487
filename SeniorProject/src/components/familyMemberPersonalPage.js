@@ -17,6 +17,11 @@ class FamilyMemberPersonalPage extends React.Component {
    	};
    }
 
+   onPress() {
+      const famMember = this.state.famMem;
+      this.props.navigation.navigate('AddMedication', { famMember });
+   }
+
 	componentDidMount(){
 		var ref = firebase.database().ref('users/' + this.state.user.uid);
 		ref.child('familyName').once('value', function(snap) {} )
@@ -28,7 +33,7 @@ class FamilyMemberPersonalPage extends React.Component {
 	render() {
 		return (
 			<View>
-			<SignUpHeader marginLeft={10} fontSize={30} buttonText="Back" headerText= {this.state.famMem + "'s Personal Page"} navigation={this.props.navigation} />
+			<SignUpHeader marginLeft={10} fontSize={30} buttonText="Back" headerText= {this.state.famMem + "'s Page"} navigation={this.props.navigation} />
 			<Card>
 
 			<CardSection>
@@ -41,6 +46,13 @@ class FamilyMemberPersonalPage extends React.Component {
 
 			<CardSection>
 			<Text>Table for Appointments</Text>
+			</CardSection>
+
+			<CardSection>
+			<Button 
+	        buttonText="Add Medication" 
+            onPress={() => this.onPress()}
+            />
 			</CardSection>
 
 			</Card>
