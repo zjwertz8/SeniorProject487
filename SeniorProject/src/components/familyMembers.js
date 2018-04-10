@@ -90,7 +90,11 @@ class FamilyMembers extends React.Component {
 			<ListView 
 			 enableEmptySections={true}
 			 dataSource={this.state.dataSource}
-			 renderRow={this._renderItem.bind(this) } />
+			 renderRow={this._renderItem.bind(this)}
+             renderSectionHeader={this.renderSectionHeader}
+             
+             
+			  />
 			</CardSection>
 
 			<CardSection 

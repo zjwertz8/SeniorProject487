@@ -48,7 +48,7 @@ class AddFamilyMemberForm extends React.Component {
 			Dropdown: Dropdown,
 		});
 		this.props.navigation.navigate('Home');
-	}
+	    }
 	}
 
 

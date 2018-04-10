@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, Picker } from 'react-native';
+import { View, Text, Picker, TouchableOpacity } from 'react-native';
+import { DatePickerDialog } from 'react-native-datepicker-dialog';
 import firebase from 'firebase';
 import { Button, Card, CardSection, Input, SignUpHeader } from './common';
 
@@ -16,7 +17,9 @@ class AddMedicationForm extends React.Component {
     		FamMemName: props.navigation.state.params.famMember,
     		MedName: '',
     		error: '',
-    		Quantity: 0,
+    		Quantity: '',
+    		dateText: '',
+    		datePick: null,
     	}
     	console.log(this.state.FamMemName);
     }
@@ -36,22 +39,46 @@ class AddMedicationForm extends React.Component {
         	this.setState({ error: 'Please Enter Quantity'});
         	return;
         }
-        else if (Number.isInteger(Quantity) == false)
+        else if (Quantity <= 0)
         {
-        	console.log(Quantity);
         	this.setState({ error: 'Please Provide Valid Quantity'});
+        	return;
+        }
+        else if(isNaN(Quantity) || Quantity.includes('.'))
+        {
+        	this.setState({ error: 'Please Provide Integer Value'});
         	return;
         }
         else
         {
-        	firebase.database().ref('users/' + current.uid + '/medications/' + FamMemName).set({
-        		MedName: MedName,
-        		Quantity: Quantity,
-        	});
         	console.log('set');
-        }
+        } 
+	}
 
-        
+	onDatePress = () => {
+		let datePick = this.state.datePick;
+
+		if(!datePick || datePick == null)
+		{
+			datePick = new Date();
+			this.setState({
+				datePick: datePick
+			});
+		}
+
+
+		this.refs.dateDialog.open({
+			date: datePick,
+			maxDate: new Date(2020, 4, 30),
+			minDate: new Date()
+		});
+	}
+
+	onDatePicked = (date) => {
+		this.setState({
+			datePick: date,
+			dateText: moment(date).format('DD-MM-YYYY')
+		});
 	}
 
 	render() {
@@ -82,6 +109,7 @@ class AddMedicationForm extends React.Component {
             <CardSection>
 			<Input
 			value={this.state.Quantity}
+			onChangeText={Quantity => this.setState({ Quantity })}
 			label={'Quantity: '}
 			placeholder={'30'}
 			keyboardType={'numeric'}
@@ -98,6 +126,20 @@ class AddMedicationForm extends React.Component {
                                    }}
 			/>
 			</CardSection>
+            <View style={styles.dateContainer}>
+            <View>
+            <Text>Dates n junk</Text>
+            <TouchableOpacity onPress={this.onDatePress.bind(this)} >
+            <View style={styles.datePickerBox}>
+              <Text style={styles.datePickerText}>{this.state.dateText}</Text>
+            </View>
+            </TouchableOpacity>
+            </View>
+
+            <DatePickerDialog ref="dateDialog" onDatePicked={this.onDatePicked.bind(this)} />
+			</View>
+			
+			
 
 			</Card>
 			</View>
@@ -110,7 +152,29 @@ const styles = {
 		fontSize: 20,
 		alignSelf: 'center',
 		color: 'red'
-	}
+	},
+	datePickerBox: {
+		marginTop: 9,
+    	borderColor: '#FF91B2',
+    	borderWidth: 2,
+    	padding: 0,
+    	borderTopLeftRadius: 4,
+    	borderTopRightRadius: 4,
+    	borderBottomLeftRadius: 4,
+    	borderBottomRightRadius: 4,
+    	height: 38,
+    	justifyContent:'center'
+	},
+	datePickerText: {
+		fontSize: 14,
+    	marginLeft: 5,
+    	borderWidth: 0,
+    	color: 'pink'
+	},
+	dateContainer: {
+    padding: 10,
+    backgroundColor: '#FFFFFF'
+  },
 };
 
 export default AddMedicationForm;
