@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, Picker, TouchableOpacity } from 'react-native';
-import { DatePickerDialog } from 'react-native-datepicker-dialog';
+import { View, Text, Picker, TouchableOpacity, Animated } from 'react-native';
 import firebase from 'firebase';
 import moment from 'moment';
+import RadioForm from 'react-native-simple-radio-button';
 import { Button, Card, CardSection, Input, SignUpHeader } from './common';
 
 class AddMedicationForm extends React.Component {
@@ -19,11 +19,16 @@ class AddMedicationForm extends React.Component {
     		MedName: '',
     		error: '',
     		Quantity: '',
+    		Value: -1,
+    		radio_props: [
+          {label: 'No', value: 0},
+          {label: 'Yes', value: 1}
+    	],
     	}
-    	console.log(this.state.FamMemName);
+
     }
 	onButtonPress() {
-		const { FamMemName, MedName, error, Quantity } = this.state;
+		const { FamMemName, MedName, error, Quantity, Value } = this.state;
 		this.setState({ error: '' });
 		const current = firebase.auth().currentUser;
         
@@ -47,10 +52,15 @@ class AddMedicationForm extends React.Component {
         	this.setState({ error: 'Please Provide Integer Value'});
         	return;
         }
+        else if(Value === -1)
+        {
+        	this.setState({ error: 'Please Select Yes or No'});
+        	return;
+        } 
         else
         {
-             this.props.navigation.navigate('AddMedicationTwo', { FamMemName, MedName, Quantity });
-        } 
+        	this.props.navigation.navigate('AddMedicationTwo', { FamMemName, MedName, Quantity, Value });
+        }
 	}
 
 	render() {
@@ -87,8 +97,22 @@ class AddMedicationForm extends React.Component {
 			keyboardType={'numeric'}
 			/>
 			</CardSection>
-             
-            <Text style={styles.errorTextStyle}> 
+
+			<CardSection>
+			<Text style={styles.radioTextStyle}> Daily Medication? </Text>
+			<RadioForm
+			  radio_props={this.state.radio_props}
+			  initial={this.state.Value}
+			  formHorizontal={true}
+			  radioStyle={styles.radioStyle}
+			  labelStyle={{fontSize: 18}}
+			  buttonColor={'#FFC0CB'}
+			  selectedButtonColor={'#FF6699'}
+			  onPress={(value) => this.setState({Value: value}) }
+			  />
+			</CardSection>
+
+			<Text style={styles.errorTextStyle}> 
             { this.state.error }
             </Text>
 
@@ -111,8 +135,19 @@ const styles = {
 	errorTextStyle: {
 		fontSize: 20,
 		alignSelf: 'center',
-		color: 'red'
+		color: 'red',
 	},
+	radioStyle: {
+		marginLeft: 10,
+		marginRight: 10,
+		marginTop: 5,
+	},
+	radioTextStyle: {
+		fontSize: 18,
+		color: 'black',
+		position: 'relative',
+		left: -11,
+	}
 };
 
 export default AddMedicationForm;
@@ -196,3 +231,7 @@ export default AddMedicationForm;
 	// 		dateText: moment(date).format('YYYY-MMM-DD')
 	// 	});
 	// }
+
+
+// import { DatePickerDialog } from 'react-native-datepicker-dialog';
+

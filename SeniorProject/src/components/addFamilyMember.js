@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, Picker } from 'react-native';
+import { View, Text, Picker, Animated } from 'react-native';
 import firebase from 'firebase';
+import RadioForm from 'react-native-simple-radio-button';
 import { Button, Card, CardSection, Input, SignUpHeader } from './common';
 
 class AddFamilyMemberForm extends React.Component {
@@ -91,7 +92,13 @@ class AddFamilyMemberForm extends React.Component {
             <Picker.Item label="Wife" value="Wife" />
             </Picker>
 
-            <Text style={styles.errorTextStyle}> { this.state.error }</Text>
+            <RadioForm
+              animation={true}
+            />
+
+            <Text style={styles.errorTextStyle} > 
+            { this.state.error }
+            </Text>
 
 			<CardSection>
 			<Button 
