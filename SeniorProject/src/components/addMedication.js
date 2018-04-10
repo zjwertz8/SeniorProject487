@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Picker, TouchableOpacity } from 'react-native';
 import { DatePickerDialog } from 'react-native-datepicker-dialog';
 import firebase from 'firebase';
+import moment from 'moment';
 import { Button, Card, CardSection, Input, SignUpHeader } from './common';
 
 class AddMedicationForm extends React.Component {
@@ -77,7 +78,7 @@ class AddMedicationForm extends React.Component {
 	onDatePicked = (date) => {
 		this.setState({
 			datePick: date,
-			dateText: moment(date).format('DD-MM-YYYY')
+			dateText: moment(date).format('DD-MMM-YYYY')
 		});
 	}
 
@@ -126,6 +127,7 @@ class AddMedicationForm extends React.Component {
                                    }}
 			/>
 			</CardSection>
+
             <View style={styles.dateContainer}>
             <View>
             <Text>Dates n junk</Text>
