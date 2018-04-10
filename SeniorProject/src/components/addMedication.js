@@ -19,19 +19,13 @@ class AddMedicationForm extends React.Component {
     		MedName: '',
     		error: '',
     		Quantity: '',
-    		dateText: 'Select a Date',
-    		datePick: null,
     	}
     	console.log(this.state.FamMemName);
     }
 	onButtonPress() {
-		const { FamMemName, MedName, error, Quantity, dateText, datePick } = this.state;
+		const { FamMemName, MedName, error, Quantity } = this.state;
 		this.setState({ error: '' });
 		const current = firebase.auth().currentUser;
-		console.log(dateText);
-		console.log(datePick);
-		console.log(Quantity);
-		console.log(Quantity - 2);
         
         if(MedName.length === 0)
         {
@@ -55,34 +49,8 @@ class AddMedicationForm extends React.Component {
         }
         else
         {
-        	console.log('nice');
+             this.props.navigation.navigate('AddMedicationTwo', { FamMemName, MedName, Quantity });
         } 
-	}
-
-	onDatePress = () => {
-		let datePick = this.state.datePick;
-
-		if(!datePick || datePick == null)
-		{
-			datePick = new Date();
-			this.setState({
-				datePick: datePick
-			});
-		}
-
-
-		this.refs.dateDialog.open({
-			date: datePick,
-			maxDate: new Date(2020, 4, 30),
-			minDate: new Date()
-		});
-	}
-
-	onDatePicked = (date) => {
-		this.setState({
-			datePick: date,
-			dateText: moment(date).format('YYYY-MMM-DD')
-		});
 	}
 
 	render() {
@@ -119,8 +87,10 @@ class AddMedicationForm extends React.Component {
 			keyboardType={'numeric'}
 			/>
 			</CardSection>
-
-            <Text style={styles.errorTextStyle}> { this.state.error }</Text>
+             
+            <Text style={styles.errorTextStyle}> 
+            { this.state.error }
+            </Text>
 
 			<CardSection>
 			<Button 
@@ -130,22 +100,7 @@ class AddMedicationForm extends React.Component {
                                    }}
 			/>
 			</CardSection>
-
-            <View style={styles.dateContainer}>
-            <View>
-            <Text style={styles.dateText}>Date</Text>
-            <TouchableOpacity onPress={this.onDatePress.bind(this)} >
-            <View style={styles.datePickerBox}>
-              <Text style={styles.datePickerText}>{this.state.dateText}</Text>
-            </View>
-            </TouchableOpacity>
-            </View>
-
-            <DatePickerDialog ref="dateDialog" onDatePicked={this.onDatePicked.bind(this)} />
-			</View>
-			
-			
-
+  			
 			</Card>
 			</View>
 			);
@@ -158,34 +113,6 @@ const styles = {
 		alignSelf: 'center',
 		color: 'red'
 	},
-	datePickerBox: {
-		marginTop: 9,
-    	borderColor: '#FF91B2',
-    	borderWidth: 2,
-    	padding: 0,
-    	borderTopLeftRadius: 4,
-    	borderTopRightRadius: 4,
-    	borderBottomLeftRadius: 4,
-    	borderBottomRightRadius: 4,
-    	height: 38,
-    	justifyContent:'center'
-	},
-	datePickerText: {
-		fontSize: 18,
-    	marginLeft: 5,
-    	borderWidth: 0,
-    	alignSelf: 'center',
-    	color: 'black',
-    	fontWeight: '500',
-	},
-	dateContainer: {
-    padding: 10,
-    backgroundColor: '#FFFFFF'
-  },
-    dateText: {
-    	fontSize: 18,
-    	color: 'black',
-    }
 };
 
 export default AddMedicationForm;
@@ -201,3 +128,71 @@ export default AddMedicationForm;
 // 			Quantity: Quantity,
 // 			Date: dateText,
 // 		});
+
+
+	// datePickerBox: {
+	// 	marginTop: 9,
+ //    	borderColor: '#FF91B2',
+ //    	borderWidth: 2,
+ //    	padding: 0,
+ //    	borderTopLeftRadius: 4,
+ //    	borderTopRightRadius: 4,
+ //    	borderBottomLeftRadius: 4,
+ //    	borderBottomRightRadius: 4,
+ //    	height: 38,
+ //    	justifyContent:'center',
+	// },
+	// datePickerText: {
+	// 	fontSize: 18,
+ //    	marginLeft: 5,
+ //    	borderWidth: 0,
+ //    	alignSelf: 'center',
+ //    	color: 'black',
+ //    	fontWeight: '500',
+	// },
+	// dateContainer: {
+ //    padding: 10,
+ //    backgroundColor: '#FFFFFF',
+ //  },
+ //    dateText: {
+ //    	fontSize: 18,
+ //    	color: 'black',
+ //    },
+
+// <View style={styles.dateContainer}>
+//               <View>
+//                  <Text style={styles.dateText}>Date</Text>
+//                    <TouchableOpacity onPress={this.onDatePress.bind(this)} >
+//                       <View style={styles.datePickerBox}>
+//                          <Text style={styles.datePickerText}>{this.state.dateText}</Text>
+//                       </View>
+//                    </TouchableOpacity>
+//                </View>
+//             <DatePickerDialog ref="dateDialog" onDatePicked={this.onDatePicked.bind(this)} />
+// 			</View>
+
+	// onDatePress = () => {
+	// 	let datePick = this.state.datePick;
+
+	// 	if(!datePick || datePick == null)
+	// 	{
+	// 		datePick = new Date();
+	// 		this.setState({
+	// 			datePick: datePick
+	// 		});
+	// 	}
+
+
+	// 	this.refs.dateDialog.open({
+	// 		date: datePick,
+	// 		maxDate: new Date(2020, 4, 30),
+	// 		minDate: new Date()
+	// 	});
+	// }
+
+	// onDatePicked = (date) => {
+	// 	this.setState({
+	// 		datePick: date,
+	// 		dateText: moment(date).format('YYYY-MMM-DD')
+	// 	});
+	// }

@@ -9,6 +9,7 @@ import FamilyMembers from './components/familyMembers';
 import AddFamilyMemberForm from './components/addFamilyMember';
 import FamilyMemberPersonalPage from './components/familyMemberPersonalPage';
 import AddMedicationForm from './components/addMedication';
+import AddMedicationTwoForm from './components/addMedicationTwo';
 
 const RootStack = StackNavigator(
 {
@@ -19,6 +20,7 @@ const RootStack = StackNavigator(
   AddFamilyMember: { screen: AddFamilyMemberForm },
   FamilyMemberPersonalPage: { screen: FamilyMemberPersonalPage },
   AddMedication: { screen: AddMedicationForm },
+  AddMedicationTwo: { screen: AddMedicationTwoForm },
 },
   { initialRouteName: 'Login' },
 );
