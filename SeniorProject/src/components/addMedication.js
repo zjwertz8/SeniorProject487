@@ -19,16 +19,19 @@ class AddMedicationForm extends React.Component {
     		MedName: '',
     		error: '',
     		Quantity: '',
-    		dateText: '',
+    		dateText: 'Select a Date',
     		datePick: null,
     	}
     	console.log(this.state.FamMemName);
     }
 	onButtonPress() {
-		const { FamMemName, MedName, error, Quantity } = this.state;
+		const { FamMemName, MedName, error, Quantity, dateText, datePick } = this.state;
 		this.setState({ error: '' });
 		const current = firebase.auth().currentUser;
+		console.log(dateText);
+		console.log(datePick);
 		console.log(Quantity);
+		console.log(Quantity - 2);
         
         if(MedName.length === 0)
         {
@@ -52,7 +55,7 @@ class AddMedicationForm extends React.Component {
         }
         else
         {
-        	console.log('set');
+        	console.log('nice');
         } 
 	}
 
@@ -78,7 +81,7 @@ class AddMedicationForm extends React.Component {
 	onDatePicked = (date) => {
 		this.setState({
 			datePick: date,
-			dateText: moment(date).format('DD-MMM-YYYY')
+			dateText: moment(date).format('YYYY-MMM-DD')
 		});
 	}
 
@@ -130,7 +133,7 @@ class AddMedicationForm extends React.Component {
 
             <View style={styles.dateContainer}>
             <View>
-            <Text>Dates n junk</Text>
+            <Text style={styles.dateText}>Date</Text>
             <TouchableOpacity onPress={this.onDatePress.bind(this)} >
             <View style={styles.datePickerBox}>
               <Text style={styles.datePickerText}>{this.state.dateText}</Text>
@@ -168,15 +171,33 @@ const styles = {
     	justifyContent:'center'
 	},
 	datePickerText: {
-		fontSize: 14,
+		fontSize: 18,
     	marginLeft: 5,
     	borderWidth: 0,
-    	color: 'pink'
+    	alignSelf: 'center',
+    	color: 'black',
+    	fontWeight: '500',
 	},
 	dateContainer: {
     padding: 10,
     backgroundColor: '#FFFFFF'
   },
+    dateText: {
+    	fontSize: 18,
+    	color: 'black',
+    }
 };
 
 export default AddMedicationForm;
+
+// firebase.database().ref('users/' + current.uid + '/Medications/' + FamMemName).set({
+// 			MedName: MedName,
+// 			Quantity: Quantity,
+// 			Date: dateText,
+// 		});
+//         	firebase.database().ref('users/' + current.uid + '/AllMedications/').set({
+// 			Name: FamMemName,
+// 			MedName: MedName,
+// 			Quantity: Quantity,
+// 			Date: dateText,
+// 		});
