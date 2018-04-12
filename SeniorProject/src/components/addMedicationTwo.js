@@ -20,29 +20,94 @@ class AddMedicationTwoForm extends React.Component {
     		error: '',
     		Quantity: props.navigation.state.params.Quantity,
     		Value: props.navigation.state.params.Value,
-    		dateText: 'Select a Date',
+    		dateText: 'Click To Select a Date',
     		datePick: null,
     	}
-    	console.log(this.state.FamMemName);
-    	console.log(this.state.MedName);
-    	console.log(this.state.Quantity);
-    	console.log(this.state.Value);
-
     }
+        
+
 	onButtonPress() {
-		const { FamMemName, MedName, error, Quantity, dateText, datePick } = this.state;
-		this.setState({ error: '' });
+		const { FamMemName, MedName, error, dateText, datePick, Quantity } = this.state;
 		const current = firebase.auth().currentUser;
+		this.setState({ error: '' });
+        console.log('in button press');
+        console.log(Quantity);
+        
+
+		 if(dateText === 'Click To Select a Date')
+        {
+        	this.setState({ error: 'Please Select a Date'});
+        	return;
+        }
+       else
+       {
+       	this.setState({ Quantity: this.state.Quantity - 1});
+    	firebase.database().ref('users/' + current.uid + '/Medications/' + FamMemName).push({
+			MedName: MedName,
+			Quantity: Quantity,
+			Date: dateText,
+		});
+        	firebase.database().ref('users/' + current.uid + '/AllMedications/').push({
+			Name: FamMemName,
+			MedName: MedName,
+			Quantity: Quantity,
+			Date: dateText,
+		});
+
+        if(this.state.Quantity - 1 === 0)
+        {
+        	this.props.navigation.navigate('Home');
+        	return;
+        }
+         this.setState({ dateText: 'Click To Select a Date'});
+        }
         
         }
+
+    onDatePress = () => {
+		let datePick = this.state.datePick;
+
+		if(!datePick || datePick == null)
+		{
+			datePick = new Date();
+			this.setState({
+				datePick: datePick
+			});
+		}
+
+		this.refs.dateDialog.open({
+			date: datePick,
+			maxDate: new Date(2020, 4, 30),
+			minDate: new Date()
+		});
+	}
+
+	onDatePicked = (date) => {
+		this.setState({
+			datePick: date,
+			dateText: moment(date).format('YYYY-MMM-DD')
+		});
+	}
 
 	render() {
 		const valueOfNo = <View><SignUpHeader marginLeft={20} fontSize={30} headerText="Add Date and Time" buttonText="Back" navigation={this.props.navigation} />
 			<Card>
 
 			<CardSection>
-			<Text style={styles.textStyle}>NOQuantity Left: {this.state.Quantity }</Text>
+			<Text style={styles.textStyle}>Quantity Left: {this.state.Quantity }</Text>
 			</CardSection>
+
+			<View style={styles.dateContainer}>
+              <View>
+                   <TouchableOpacity onPress={this.onDatePress.bind(this)} >
+                      <View style={styles.datePickerBox}>
+                         <Text style={styles.datePickerText}>{this.state.dateText}</Text>
+                      </View>
+                   </TouchableOpacity>
+               </View>
+            <DatePickerDialog ref="dateDialog" onDatePicked={this.onDatePicked.bind(this)} />
+			</View>
+
           
              
             <Text style={styles.errorTextStyle}> 
@@ -52,7 +117,7 @@ class AddMedicationTwoForm extends React.Component {
 			<CardSection>
 			<Button 
                     buttonText="Submit" 
-                    onPress={() => { 
+                    onPress={() => {
                                     this.onButtonPress();
                                    }}
 			/>
@@ -60,6 +125,11 @@ class AddMedicationTwoForm extends React.Component {
   			
 			</Card>
 			</View>;
+
+
+
+
+
 
 	    const valueOfYes = <View><SignUpHeader marginLeft={20} fontSize={30} headerText="Add Date and Time" buttonText="Back" navigation={this.props.navigation} />
 			<Card>
@@ -86,6 +156,8 @@ class AddMedicationTwoForm extends React.Component {
 			</View>;
 
 
+
+
 		let display;
 		if(this.state.Value === 0)
 		{
@@ -95,6 +167,7 @@ class AddMedicationTwoForm extends React.Component {
 		{
 			display = valueOfYes;
 		}
+
 
 		return (
 			<View>
@@ -114,6 +187,34 @@ const styles = {
 		fontSize: 20,
 		alignSelf: 'center',
 	},
+	datePickerBox: {
+		marginTop: 9,
+    	borderColor: '#FF91B2',
+    	borderWidth: 2,
+    	padding: 0,
+    	borderTopLeftRadius: 4,
+    	borderTopRightRadius: 4,
+    	borderBottomLeftRadius: 4,
+    	borderBottomRightRadius: 4,
+    	height: 38,
+    	justifyContent:'center',
+	},
+	datePickerText: {
+		fontSize: 18,
+    	marginLeft: 5,
+    	borderWidth: 0,
+    	alignSelf: 'center',
+    	color: 'black',
+    	fontWeight: '500',
+	},
+	dateContainer: {
+    padding: 10,
+    backgroundColor: '#FFFFFF',
+  },
+    dateText: {
+    	fontSize: 18,
+    	color: 'black',
+    },
 };
 
 export default AddMedicationTwoForm;
