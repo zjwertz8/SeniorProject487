@@ -14,8 +14,6 @@ class AddFamilyMemberForm extends React.Component {
 		const { Name, Age, error, Dropdown } = this.state;
 		this.setState({ error: '' });
 		const current = firebase.auth().currentUser;
-		console.log(Age);
-		console.log(isNaN(Age));
 
         if(Name.length === 0)
         {

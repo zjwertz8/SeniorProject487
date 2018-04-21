@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { View, Text, Picker, TouchableOpacity } from 'react-native';
 import { DatePickerDialog } from 'react-native-datepicker-dialog';
+import { TimePicker, WheelPicker } from 'react-native-wheel-picker-android';
 import firebase from 'firebase';
 import moment from 'moment';
-import { Button, Card, CardSection, Input, SignUpHeader, renderIf } from './common';
+import { Button, Card, CardSection, Input, SignUpHeader } from './common';
 
 class AddMedicationTwoForm extends React.Component {
 	static navigationOptions = {
@@ -13,7 +14,6 @@ class AddMedicationTwoForm extends React.Component {
     constructor(props)
     {
     	super(props);
-    	console.log(props);
     	this.state = {
     		FamMemName: props.navigation.state.params.FamMemName,
     		MedName: props.navigation.state.params.MedName,
@@ -22,21 +22,26 @@ class AddMedicationTwoForm extends React.Component {
     		Value: props.navigation.state.params.Value,
     		dateText: 'Click To Select a Date',
     		datePick: null,
+    		timeText: 'Click To Select Time',
+    		timePick: 'Please Select a Time',
     	}
     }
         
 
 	onButtonPress() {
-		const { FamMemName, MedName, error, dateText, datePick, Quantity } = this.state;
+		const { FamMemName, MedName, error, dateText, datePick, Quantity, timePick } = this.state;
 		const current = firebase.auth().currentUser;
 		this.setState({ error: '' });
-        console.log('in button press');
-        console.log(Quantity);
         
 
 		 if(dateText === 'Click To Select a Date')
         {
         	this.setState({ error: 'Please Select a Date'});
+        	return;
+        }
+        else if(timePick === 'Please Select a Time')
+        {
+        	this.setState({ error: 'Please Select a Time'});
         	return;
         }
        else
@@ -46,12 +51,14 @@ class AddMedicationTwoForm extends React.Component {
 			MedName: MedName,
 			Quantity: Quantity,
 			Date: dateText,
+			Time: timePick,
 		});
         	firebase.database().ref('users/' + current.uid + '/AllMedications/').push({
 			Name: FamMemName,
 			MedName: MedName,
 			Quantity: Quantity,
 			Date: dateText,
+			Time: timePick,
 		});
 
         if(this.state.Quantity - 1 === 0)
@@ -60,6 +67,7 @@ class AddMedicationTwoForm extends React.Component {
         	return;
         }
          this.setState({ dateText: 'Click To Select a Date'});
+         this.setState({ timePick: 'Please Select a Time'});
         }
         
         }
@@ -83,13 +91,27 @@ class AddMedicationTwoForm extends React.Component {
 	}
 
 	onDatePicked = (date) => {
+		console.log(date);
 		this.setState({
 			datePick: date,
 			dateText: moment(date).format('YYYY-MMM-DD')
 		});
 	}
 
+	onTimeSelected = (time) => {
+		this.setState({ 
+			timeText: time,
+			timePick: moment(time).format('LT'),
+		})
+	} 
+
+
 	render() {
+
+        const minutesArray = ['00', '05', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55'];
+        
+        const now = new Date();
+
 		const valueOfNo = <View><SignUpHeader marginLeft={20} fontSize={30} headerText="Add Date and Time" buttonText="Back" navigation={this.props.navigation} />
 			<Card>
 
@@ -108,8 +130,25 @@ class AddMedicationTwoForm extends React.Component {
             <DatePickerDialog ref="dateDialog" onDatePicked={this.onDatePicked.bind(this)} />
 			</View>
 
+			
+			<CardSection>
+			<Text style={{fontSize: 18, color: 'black'}}>Select a Time</Text>
+			<TimePicker
+			   minutes={minutesArray}
+			   onTimeSelected={this.onTimeSelected.bind(this)}
+			   initDate={now.toISOString()}
+			 />
+
+			 </CardSection>
+			
+			
           
-             
+             <CardSection>
+             <Text>
+             Selected Time: {this.state.timePick}
+             </Text>
+             </CardSection>
+
             <Text style={styles.errorTextStyle}> 
             { this.state.error }
             </Text>
@@ -218,3 +257,5 @@ const styles = {
 };
 
 export default AddMedicationTwoForm;
+
+

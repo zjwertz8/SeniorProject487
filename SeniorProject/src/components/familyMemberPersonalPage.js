@@ -10,7 +10,6 @@ class FamilyMemberPersonalPage extends React.Component {
     
    constructor(props) {
    	super(props);
-   	console.log(props.navigation.state.params.famMem);
    	this.state = {
    		user: firebase.auth().currentUser,
    		famMem: props.navigation.state.params.famMem,

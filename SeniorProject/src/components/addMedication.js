@@ -13,7 +13,6 @@ class AddMedicationForm extends React.Component {
     constructor(props)
     {
     	super(props);
-    	console.log(props);
     	this.state = {
     		FamMemName: props.navigation.state.params.famMember,
     		MedName: '',
