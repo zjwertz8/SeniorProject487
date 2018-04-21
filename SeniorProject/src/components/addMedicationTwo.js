@@ -28,7 +28,7 @@ class AddMedicationTwoForm extends React.Component {
     }
         
 
-	onButtonPress() {
+	onNoButtonPress() {
 		const { FamMemName, MedName, error, dateText, datePick, Quantity, timePick } = this.state;
 		const current = firebase.auth().currentUser;
 		this.setState({ error: '' });
@@ -72,6 +72,34 @@ class AddMedicationTwoForm extends React.Component {
         
         }
 
+
+        onYesButtonPress() {
+		const { FamMemName, MedName, error, dateText, datePick, Quantity, timePick } = this.state;
+		const current = firebase.auth().currentUser;
+		this.setState({ error: '' });
+		
+
+		if(dateText === 'Click To Select a Date')
+        {
+        	this.setState({ error: 'Please Select a Date'});
+        	return;
+        }
+        else
+        {  
+        	for(var i = 0; i < Quantity; i++) {
+        		firebase.database().ref('users/' + current.uid + '/Medications/' + FamMemName).push({
+			    MedName: MedName,
+			    Quantity: Quantity - i,
+			    Date: moment(dateText).add(i, 'days').format("YYYY-MMM-DD"),
+			    Time: timePick,
+		        });
+        	}
+        	this.props.navigation.navigate('Home');
+        }
+        }
+        
+
+
     onDatePress = () => {
 		let datePick = this.state.datePick;
 
@@ -91,7 +119,6 @@ class AddMedicationTwoForm extends React.Component {
 	}
 
 	onDatePicked = (date) => {
-		console.log(date);
 		this.setState({
 			datePick: date,
 			dateText: moment(date).format('YYYY-MMM-DD')
@@ -157,7 +184,7 @@ class AddMedicationTwoForm extends React.Component {
 			<Button 
                     buttonText="Submit" 
                     onPress={() => {
-                                    this.onButtonPress();
+                                    this.onNoButtonPress();
                                    }}
 			/>
 			</CardSection>
@@ -174,8 +201,19 @@ class AddMedicationTwoForm extends React.Component {
 			<Card>
 
 			<CardSection>
-			<Text style={styles.textStyle}>YESQuantity Left: {this.state.Quantity }</Text>
+			<Text style={styles.textStyle}>Select Start Date for {this.state.MedName}</Text>
 			</CardSection>
+
+			<View style={styles.dateContainer}>
+              <View>
+                   <TouchableOpacity onPress={this.onDatePress.bind(this)} >
+                      <View style={styles.datePickerBox}>
+                         <Text style={styles.datePickerText}>{this.state.dateText}</Text>
+                      </View>
+                   </TouchableOpacity>
+               </View>
+            <DatePickerDialog ref="dateDialog" onDatePicked={this.onDatePicked.bind(this)} />
+			</View>
           
              
             <Text style={styles.errorTextStyle}> 
@@ -186,14 +224,13 @@ class AddMedicationTwoForm extends React.Component {
 			<Button 
                     buttonText="Submit" 
                     onPress={() => { 
-                                    this.onButtonPress();
+                                    this.onYesButtonPress();
                                    }}
 			/>
 			</CardSection>
   			
 			</Card>
 			</View>;
-
 
 
 
