@@ -19,6 +19,8 @@ class AddMedicationForm extends React.Component {
     		error: '',
     		Quantity: '',
     		Value: -1,
+    		Pills: '',
+    		Times: '',
     		radio_props: [
           {label: 'No', value: 0},
           {label: 'Yes', value: 1}
@@ -27,7 +29,7 @@ class AddMedicationForm extends React.Component {
 
     }
 	onButtonPress() {
-		const { FamMemName, MedName, error, Quantity, Value } = this.state;
+		const { FamMemName, MedName, error, Quantity, Value, Pills, Times } = this.state;
 		this.setState({ error: '' });
 		const current = firebase.auth().currentUser;
         
@@ -55,15 +57,79 @@ class AddMedicationForm extends React.Component {
         {
         	this.setState({ error: 'Please Select Yes or No'});
         	return;
-        } 
+        }
+        else if(Value === 1) 
+        {
+        	if(Pills.length === 0)
+        	{
+        		this.setState({ error: 'Please Enter Pills Per Session'});
+        		return;
+        	}
+        	else if(Pills <= 0)
+        	{
+        		this.setState({ error: 'Please Provide Valid Quantity'});
+        		return;
+        	}
+        	else if(isNaN(Pills) || Pills.includes('.'))
+        	{
+        		this.setState({ error: 'Please Provide Integer Value'});
+        		return;
+        	}
+        	else if(Times.length === 0)
+        	{
+        		this.setState({ error: 'Please Enter Times Per Day'});
+        		return;
+        	}
+        	else if(Times <= 0)
+        	{
+        		this.setState({ error: 'Please Provide Valid Quantity'});
+        		return;
+        	}
+        	else if(isNaN(Times) || Times.includes('.'))
+        	{
+        		this.setState({ error: 'Please Provide Integer Value'})
+        		return;
+        	}
+        	else
+        	{
+        		this.props.navigation.navigate('AddMedicationTwo', { FamMemName, MedName, Quantity, Value, Pills, Times });
+        	}
+        }
         else
         {
-        	this.props.navigation.navigate('AddMedicationTwo', { FamMemName, MedName, Quantity, Value });
+        	this.props.navigation.navigate('AddMedicationTwo', { FamMemName, MedName, Quantity, Value, Pills, Times });
         }
 	}
 
 	render() {
 		const current = firebase.auth().currentUser;
+        const dailyMeds = this.state.Value == -1 || this.state.Value == 0 ? (
+             <View></View>
+        	) : (
+        	<View>
+               <CardSection>
+               <Input
+				value={this.state.Pills}
+				onChangeText={Pills => this.setState({ Pills })}
+				label={'# of Pills Per Session: '}
+				placeholder={'1'}
+				keyboardType={'numeric'}
+				/>
+               </CardSection>
+
+               <CardSection>
+               <Input
+				value={this.state.Times}
+				onChangeText={Times => this.setState({ Times })}
+				label={'# of Times Per Day: '}
+				placeholder={'2'}
+				keyboardType={'numeric'}
+				/>
+               </CardSection>
+               </View>
+        	);
+        
+
 		return (
 			<View>
 			<SignUpHeader marginLeft={0} fontSize={30} headerText="Add Medication" buttonText="Back" navigation={this.props.navigation} />
@@ -110,6 +176,10 @@ class AddMedicationForm extends React.Component {
 			  onPress={(value) => this.setState({Value: value}) }
 			  />
 			</CardSection>
+
+			<View>
+			{dailyMeds}
+			</View>
 
 			<Text style={styles.errorTextStyle}> 
             { this.state.error }

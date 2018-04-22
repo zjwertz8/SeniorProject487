@@ -24,6 +24,8 @@ class AddMedicationTwoForm extends React.Component {
     		datePick: null,
     		timeText: 'Click To Select Time',
     		timePick: 'Please Select a Time',
+    		Times: props.navigation.state.params.Times,
+    		Pills: props.navigation.state.params.Pills,
     	}
     }
         
@@ -74,29 +76,58 @@ class AddMedicationTwoForm extends React.Component {
 
 
         onYesButtonPress() {
-		const { FamMemName, MedName, error, dateText, datePick, Quantity, timePick } = this.state;
+		const { FamMemName, MedName, error, dateText, datePick, Quantity, timePick, Pills, Times } = this.state;
 		const current = firebase.auth().currentUser;
 		this.setState({ error: '' });
-		
 
 		if(dateText === 'Click To Select a Date')
         {
         	this.setState({ error: 'Please Select a Date'});
         	return;
         }
-        else
+        else if(timePick === 'Please Select a Time')
+        {
+        	this.setState({ error: 'Please Select a Time'});
+        	return;
+        }
+        else if(Pills == 1 && Times == 1)
         {  
-        	for(var i = 0; i < Quantity; i++) {
+        	for(var i = 0; i < Quantity; i++) 
+        	{
         		firebase.database().ref('users/' + current.uid + '/Medications/' + FamMemName).push({
 			    MedName: MedName,
 			    Quantity: Quantity - i,
 			    Date: moment(dateText).add(i, 'days').format("YYYY-MMM-DD"),
 			    Time: timePick,
+			    PillsToTake: Pills,
 		        });
         	}
+        }
+        else if(Times == 1)
+        {
+        	for(var i = 0; i < Quantity/Pills; i++)
+        	{
+        		firebase.database().ref('users/' + current.uid + '/Medications/' + FamMemName).push({
+			    MedName: MedName,
+			    Quantity: Quantity - i * Pills,
+			    Date: moment(dateText).add(i, 'days').format("YYYY-MMM-DD"),
+			    Time: timePick,
+			    PillsToTake: Pills,
+		        });
+        		
+        	}
+
+        }
+        else
+		{
+			console.log('alright');
+			return;
+		}
+
         	this.props.navigation.navigate('Home');
+        
         }
-        }
+        
         
 
 
@@ -215,7 +246,22 @@ class AddMedicationTwoForm extends React.Component {
             <DatePickerDialog ref="dateDialog" onDatePicked={this.onDatePicked.bind(this)} />
 			</View>
           
-             
+            <CardSection>
+			<Text style={{fontSize: 18, color: 'black'}}>Select a Time</Text>
+			<TimePicker
+			   minutes={minutesArray}
+			   onTimeSelected={this.onTimeSelected.bind(this)}
+			   initDate={now.toISOString()}
+			 />
+
+			 </CardSection>
+
+			 <CardSection>
+             <Text>
+             Selected Time: {this.state.timePick}
+             </Text>
+             </CardSection>
+
             <Text style={styles.errorTextStyle}> 
             { this.state.error }
             </Text>
