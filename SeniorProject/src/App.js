@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BackHandler } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import firebase from 'firebase';
+import moment from 'moment';
 import SignUpForm from './components/signUpForm';
 import LoginForm from './components/loginForm';
 import Home from './components/home';
@@ -27,6 +28,7 @@ const RootStack = StackNavigator(
 
 export default class App extends React.Component {
 
+
   componentWillMount() {
     firebase.initializeApp({
     apiKey: 'AIzaSyDn3aQFUCfuI5NvbHX4qCq01G-4XEVm9YU',
@@ -49,7 +51,20 @@ export default class App extends React.Component {
   handleBackButton() {
     return true;
   }
+
+  alertMedication() {
+      
+      var datetime = new Date();
+      var newdatetime = moment(date).format("YYY-MMM-DD LT");
+
+  }
+
+
 	render() {
+   var date = new Date();
+   var newDate = moment(date).format("YYYY-MMM-DD LT");
+   alert(newDate);
+   alert(date);
     return <RootStack />;
 	}
 }

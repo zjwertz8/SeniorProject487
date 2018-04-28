@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ListView, ScrollView } from 'react-native';
 import firebase from 'firebase';
-import { Button, Card, CardSection, HomeHeader } from './common';
+import moment from 'moment';
+import { Button, Card, CardSection, HomeHeader, ListItem } from './common';
 
 class Home extends React.Component {
 	static navigationOptions = {
@@ -10,22 +11,64 @@ class Home extends React.Component {
     
    constructor(props) {
    	super(props);
+   	uid = firebase.auth().currentUser.uid;
+   	this.dataRef = firebase.database().ref('/users/' + uid + '/AllMedications/');
    	this.state = {
-   		user: firebase.auth().currentUser,
    		famName: '',
+   		dataSource: new ListView.DataSource({
+   			rowHasChanged: (row1, row2) => row1 !== row2,
+   		}),
+   		emptyRows: '',
    	};
    }
 
+   listenForProfiles(dataRef) {
+		dataRef.on('value', (snap) => {
+			var profiles = [];
+			snap.forEach((child) => {
+				profiles.push({
+					_key: child.key,
+					famMemName: child.val().FamMemName,
+					date: child.val().Date,
+					medName: child.val().MedName,
+					quantity: child.val().Quantity,
+					time: child.val().Time,
+				});
+				profiles.sort(function(a,b)
+				{
+					return new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time);
+				});
+
+
+		        			
+			});
+			this.setState({
+				dataSource: this.state.dataSource.cloneWithRows(profiles.slice(0,5))
+			});
+		});
+
+	}
+
 	componentDidMount(){
-		var ref = firebase.database().ref('users/' + this.state.user.uid);
+		this.listenForProfiles(this.dataRef);
+		var ref = firebase.database().ref('users/' + uid);
 		ref.child('familyName').once('value', function(snap) {} )
 		.then(result => {
 			this.setState({famName: result.val()});
 		})
 	}
+
+	_renderItem(item) {
+		var shortDate = moment(item.date).format("MMM-DD")
+		return (
+			<ListItem 
+			 onPress={() => this.onPress(item)} item={item.famMemName + " " + item.medName + " " + shortDate + " " + item.time} />
+			);
+	}
 	
 	render() {
 		return (
+		    <ScrollView>
 			<View>
 			<HomeHeader marginLeft={0} fontSize={40} headerText="Home" buttonText="Logout" />
 			<Card>
@@ -35,12 +78,20 @@ class Home extends React.Component {
 			</CardSection>
 
 			<CardSection>
-			<Text>Table for Medications</Text>
+			<Text>Upcoming Medications</Text>
 			</CardSection>
-
+            
+            
 			<CardSection>
-			<Text>Table for Appointments</Text>
+			<ListView
+			enableEmptySections={true}
+			dataSource={this.state.dataSource}
+			renderRow={this._renderItem.bind(this)}
+			renderSectionHeader={this.renderSectionHeader}
+			/>
 			</CardSection>
+			
+			
 
 			<CardSection>
 			<Button 
@@ -51,6 +102,8 @@ class Home extends React.Component {
 
 			</Card>
 			</View>
+			</ScrollView>
+			
 			);
 	}
 }

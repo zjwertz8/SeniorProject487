@@ -24,7 +24,3 @@ const styles = {
 }
 
 export { ListItem };
-
-        //need to add props of respective person to onButtonPress so it
-        //redirects to personal page for that person
-        

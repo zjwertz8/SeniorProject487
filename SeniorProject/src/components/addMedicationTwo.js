@@ -92,6 +92,7 @@ class AddMedicationTwoForm extends React.Component {
         }
         else if(Pills == 1 && Times == 1)
         {  
+        	
         	for(var i = 0; i < Quantity; i++) 
         	{
         		firebase.database().ref('users/' + current.uid + '/Medications/' + FamMemName).push({
@@ -101,6 +102,17 @@ class AddMedicationTwoForm extends React.Component {
 			    Time: timePick,
 			    PillsToTake: Pills,
 		        });
+
+		        firebase.database().ref('users/' + current.uid + '/AllMedications/').push({
+			    FamMemName: FamMemName,
+			    MedName: MedName,
+			    Quantity: Quantity - i,
+			    Date: moment(dateText).add(i, 'days').format("YYYY-MMM-DD"),
+			    Time: timePick,
+			    PillsToTake: Pills,
+		        });
+
+
         	}
         }
         else if(Times == 1)
