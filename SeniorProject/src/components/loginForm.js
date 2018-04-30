@@ -20,8 +20,10 @@ class LoginForm extends React.Component {
         	this.props.navigation.navigate('Home', { current });
 
         })
-        .catch(() => {
+        .catch((error) => {
+        	console.log(error);
         this.setState({ error: 'Login Failed.' });
+
         });
     }
 

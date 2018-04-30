@@ -34,7 +34,7 @@ class AddMedicationTwoForm extends React.Component {
 		const { FamMemName, MedName, error, dateText, datePick, Quantity, timePick } = this.state;
 		const current = firebase.auth().currentUser;
 		this.setState({ error: '' });
-        
+
 
 		 if(dateText === 'Click To Select a Date')
         {
@@ -79,6 +79,7 @@ class AddMedicationTwoForm extends React.Component {
 		const { FamMemName, MedName, error, dateText, datePick, Quantity, timePick, Pills, Times } = this.state;
 		const current = firebase.auth().currentUser;
 		this.setState({ error: '' });
+		
 
 		if(dateText === 'Click To Select a Date')
         {
@@ -115,26 +116,6 @@ class AddMedicationTwoForm extends React.Component {
 
         	}
         }
-        else if(Times == 1)
-        {
-        	for(var i = 0; i < Quantity/Pills; i++)
-        	{
-        		firebase.database().ref('users/' + current.uid + '/Medications/' + FamMemName).push({
-			    MedName: MedName,
-			    Quantity: Quantity - i * Pills,
-			    Date: moment(dateText).add(i, 'days').format("YYYY-MMM-DD"),
-			    Time: timePick,
-			    PillsToTake: Pills,
-		        });
-        		
-        	}
-
-        }
-        else
-		{
-			console.log('alright');
-			return;
-		}
 
         	this.props.navigation.navigate('Home');
         

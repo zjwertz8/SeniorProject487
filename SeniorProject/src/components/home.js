@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, ListView, ScrollView } from 'react-native';
 import firebase from 'firebase';
 import moment from 'moment';
+import { pushNotifications } from './common';
 import { Button, Card, CardSection, HomeHeader, ListItem } from './common';
 
 class Home extends React.Component {
@@ -49,13 +50,41 @@ class Home extends React.Component {
 
 	}
 
+
 	componentDidMount(){
 		this.listenForProfiles(this.dataRef);
+        
+        this.dataRef.on('value', (snap) => {
+			var profiles = [];
+			snap.forEach((child) => {
+				profiles.push({
+					_key: child.key,
+					famMemName: child.val().FamMemName,
+					date: child.val().Date,
+					medName: child.val().MedName,
+					quantity: child.val().Quantity,
+					time: child.val().Time,
+				});		
+			});
+		});
+
+
 		var ref = firebase.database().ref('users/' + uid);
 		ref.child('familyName').once('value', function(snap) {} )
 		.then(result => {
 			this.setState({famName: result.val()});
 		})
+
+		var nowdatetime = new Date();
+	    var formatnowdatetime = moment(nowdatetime).format("MMM-DD LT");
+	    for(var i = 0; i < 2; i++)
+	    {
+	    setTimeout(function() {
+          console.log(nowdatetime);
+          console.log(formatnowdatetime);
+	    }, 6000);
+	}
+
 	}
 
 	_renderItem(item) {
@@ -65,6 +94,12 @@ class Home extends React.Component {
 			 onPress={() => this.onPress(item)} item={item.famMemName + " " + item.medName + " " + shortDate + " " + item.time} />
 			);
 	}
+
+	handleNotif(message) {
+		pushNotifications.localNotification(message);
+	}
+
+
 	
 	render() {
 		return (
@@ -97,6 +132,13 @@ class Home extends React.Component {
 			<Button 
 			buttonText="Family Members"
 			onPress={() => this.props.navigation.navigate('FamilyMembers')} 
+			/>
+			</CardSection>
+
+			<CardSection>
+			<Button 
+			buttonText="Local Notification"
+			onPress={() => this.handleNotif("hey")} 
 			/>
 			</CardSection>
 

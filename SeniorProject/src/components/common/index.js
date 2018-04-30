@@ -6,3 +6,5 @@ export * from './textInput';
 export * from './signupHeader';
 export * from './listItem';
 export * from './homeHeader';
+import * as pushNotifications from './pushNotifications';
+export { pushNotifications };

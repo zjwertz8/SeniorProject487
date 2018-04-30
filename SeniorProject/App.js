@@ -3,14 +3,15 @@ import { BackHandler } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import firebase from 'firebase';
 import moment from 'moment';
-import SignUpForm from './components/signUpForm';
-import LoginForm from './components/loginForm';
-import Home from './components/home';
-import FamilyMembers from './components/familyMembers';
-import AddFamilyMemberForm from './components/addFamilyMember';
-import FamilyMemberPersonalPage from './components/familyMemberPersonalPage';
-import AddMedicationForm from './components/addMedication';
-import AddMedicationTwoForm from './components/addMedicationTwo';
+import SignUpForm from './src/components/signUpForm';
+import LoginForm from './src/components/loginForm';
+import Home from './src/components/home';
+import FamilyMembers from './src/components/familyMembers';
+import AddFamilyMemberForm from './src/components/addFamilyMember';
+import FamilyMemberPersonalPage from './src/components/familyMemberPersonalPage';
+import AddMedicationForm from './src/components/addMedication';
+import AddMedicationTwoForm from './src/components/addMedicationTwo';
+import { pushNotifications } from './src/components/common';
 
 const RootStack = StackNavigator(
 {
@@ -25,6 +26,8 @@ const RootStack = StackNavigator(
 },
   { initialRouteName: 'Login' },
 );
+
+pushNotifications.configure();
 
 export default class App extends React.Component {
 
@@ -52,19 +55,9 @@ export default class App extends React.Component {
     return true;
   }
 
-  alertMedication() {
-      
-      var datetime = new Date();
-      var newdatetime = moment(date).format("YYY-MMM-DD LT");
-
-  }
-
 
 	render() {
-   var date = new Date();
-   var newDate = moment(date).format("YYYY-MMM-DD LT");
-   alert(newDate);
-   alert(date);
     return <RootStack />;
 	}
 }
+

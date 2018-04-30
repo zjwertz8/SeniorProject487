@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, ListView } from 'react-native';
 import firebase from 'firebase';
-import { Button, Card, CardSection, SignUpHeader } from './common';
+import moment from 'moment';
+import { Button, Card, CardSection, SignUpHeader, ListItem } from './common';
 
 class FamilyMemberPersonalPage extends React.Component {
 	static navigationOptions = {
@@ -10,10 +11,17 @@ class FamilyMemberPersonalPage extends React.Component {
     
    constructor(props) {
    	super(props);
+   	console.log(props);
+   	uid = firebase.auth().currentUser.uid;
+   	
    	this.state = {
    		user: firebase.auth().currentUser,
    		famMem: props.navigation.state.params.famMem,
+   		dataSource: new ListView.DataSource({
+   			rowHasChanged: (row1, row2) => row1 !== row2,
+   		}),
    	};
+   	this.dataRef = firebase.database().ref('/users/' + uid + '/Medications/' + this.state.famMem);
    }
 
    onPress() {
@@ -22,11 +30,47 @@ class FamilyMemberPersonalPage extends React.Component {
    }
 
 	componentDidMount(){
+		this.listenForProfiles(this.dataRef);
 		var ref = firebase.database().ref('users/' + this.state.user.uid);
 		ref.child('familyName').once('value', function(snap) {} )
 		.then(result => {
 			this.setState({famName: result.val()});
 		})
+	}
+
+	listenForProfiles(dataRef) {
+		dataRef.on('value', (snap) => {
+			var profiles = [];
+			snap.forEach((child) => {
+				profiles.push({
+					_key: child.key,
+					date: child.val().Date,
+					medName: child.val().MedName,
+					quantity: child.val().Quantity,
+					time: child.val().Time,
+				});
+				profiles.sort(function(a,b)
+				{
+					return new Date(a.date + ' ' + a.time) - new Date(b.date + ' ' + b.time);
+				});
+
+
+		        			
+			});
+			this.setState({
+				dataSource: this.state.dataSource.cloneWithRows(profiles.slice(0,5))
+			});
+		});
+
+	}
+
+
+	_renderItem(item) {
+		var shortDate = moment(item.date).format("MMM-DD")
+		return (
+			<ListItem 
+			 onPress={() => this.onPress(item)} item={"Med:" + item.medName + "   Date: " + shortDate + " " + item.time} />
+			);
 	}
 	
 	render() {
@@ -40,11 +84,16 @@ class FamilyMemberPersonalPage extends React.Component {
 			</CardSection>
 
 			<CardSection>
-			<Text>Table for Medications</Text>
+			<Text>Upcoming Medications</Text>
 			</CardSection>
 
 			<CardSection>
-			<Text>Table for Appointments</Text>
+			<ListView
+			enableEmptySections={true}
+			dataSource={this.state.dataSource}
+			renderRow={this._renderItem.bind(this)}
+			renderSectionHeader={this.renderSectionHeader}
+			/>
 			</CardSection>
 
 			<CardSection>
